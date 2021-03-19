@@ -19,8 +19,8 @@ class Datapoint {
 		
 	
 	std::string afficherEnregistrement(){
-		return this->dateHeure +" " +this->latitude+" "+ this->longitude +" " +this->temperature;
+		return this->dateHeure +" "+ std::to_string(this->latitude)+" "+ std::to_string(this->longitude) +" " +std::to_string(this->temperature);
 	}
 	
 	
-}	
+};

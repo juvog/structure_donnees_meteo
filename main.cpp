@@ -38,7 +38,7 @@ int main(){
 	//Interprétation des chaines de caractères dans le format souhaité et remplissage des tableaux
 	
 	std::string latitude_temp;
-	lecteur_temp >> latitude_temp;
+	lecteur_temp>> latitude_temp;
 	double latitude = std::stod(latitude_temp);
 
 	std::string longitude_temp;
@@ -74,7 +74,7 @@ int main(){
 	// Vérification que le deque mes_enregisterments est bien rempli
 	
 	for (int i = 0; i< enregistrements_meteo.size(); i++){
-		enregistrements_meteo[i].afficherEnregistrement();
+		enregistrements_meteo[i].afficherEnregistrement() ;
 	}
 	
 	
