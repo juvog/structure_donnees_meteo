@@ -5,6 +5,7 @@
 #include <climits>
 #include <limits>
 #include <deque>
+#include "datapoint.h"
 
 int main(){
 
@@ -12,14 +13,11 @@ int main(){
 
 	std::ifstream lecteur("/rawdata.txt");
 
-	//Instanciation des 5 deques où seront stockées les données du fichier rawdata.txt
-	// D'après le fichier d'aide à la prise de décision c'est la contenant le plus approprié
+	//Instanciation du deque où seront stockées les objet Datapoint récoltés à partir du fichier rawdata.txt
+	// D'après le fichier d'aide à la prise de décision c'est la contenant le plus approprié // Il faudra en discuter !!
 	
-	std::deque<double> latitudes;
-	std::deque<double> longitudes;
-	std::deque<std::string> stations;
-	std::deque<unsigned int> temperatures;
-	std::deque<std::string> dateHeures;
+	std::deque<Datapoint> enregistrements_meteo;
+
 
 
 	// Parcours du fichier rawdata.txt afin de lire tout le texte
@@ -41,22 +39,28 @@ int main(){
 	
 	std::string latitude_temp;
 	lecteur_temp >> latitude_temp;
-	latitudes.push_front(std::stod(latitude_temp));
+	double latitude = std::stod(latitude_temp);
 
 	std::string longitude_temp;
 	lecteur_temp >> longitude_temp;
-	longitudes.push_front(std::stod(longitude_temp));
+	double longitude = std::stod(longitude_temp);
 
-	std::string station_temp;
-	lecteur_temp >> station_temp;
-	stations.push_front(station_temp);
+	std::string station;
+	lecteur_temp >> station;
 
 	std::string temperature_temp;
 	lecteur_temp >> temperature_temp;
-	temperatures.push_front(std::stoi(temperature_temp));
+	double temperature_f = std::stod(temperature_temp);
+	double temperature = temperature_f*2; // vrai formule à retrouver
 
-	std::string dateHeure_temp;
-	dateHeures.push_front(dateHeure_temp);
+	std::string dateHeure;
+	lecteur_temp >> dateHeure;
+
+
+	//Instanciation du premier objet de la classe Datapoint
+	Datapoint un_enregistrement(dateHeure, latitude, longitude, temperature);
+	enregistrements_meteo.push_back(un_enregistrement);
+
 
 	//fermeture de fichier_temp
 	fichier_temp.close();
@@ -67,22 +71,10 @@ int main(){
 
 	}
 	
-	// Vérification que les tableaux sont bien remplis
-	for (int i =0;i<latitudes.size();i++){
-		std::cout << latitudes[i]<<std::endl;
-	}
+	// Vérification que le deque mes_enregisterments est bien rempli
 	
-	for (int i =0;i<longitudes.size();i++){
-		std::cout << longitudes[i]<<std::endl;
-	}
-	for (int i =0;i<stations.size();i++){
-		std::cout << stations[i]<<std::endl;
-	}
-	for (int i =0;i<temperatures.size();i++){
-		std::cout << temperatures[i]<<std::endl;
-	}
-	for (int i =0;i<dateHeures.size();i++){
-		std::cout << dateHeures[i]<<std::endl;
+	for (int i = 0; i< enregistrements_meteo.size(); i++){
+		enregistrements_meteo[i].afficherEnregistrement();
 	}
 	
 	
