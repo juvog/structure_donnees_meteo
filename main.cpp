@@ -71,6 +71,10 @@ int main(){
 
 	}
 	
+	// Fermeture du fichier rawdata.txt
+	
+	lecteur.close();
+	
 	// Vérification que le deque mes_enregisterments est bien rempli
 	
 	for (int i = 0; i< enregistrements_meteo.size(); i++){
