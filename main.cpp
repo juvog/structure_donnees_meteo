@@ -1,92 +1,76 @@
+#include <stdio.h>
 #include <iostream>
-#include <fstream>
-#include <string>
-#include <vector>
-#include <climits>
-#include <limits>
-#include <deque>
 #include "datapoint.h"
+#include  <fstream>
+#include <cstdlib>
+#include <string>
+#include <set>
+#include <sstream>
 
-int main(){
 
-    // Ouverture en lecture du fichier rawdata.txt
+using namespace std;
 
-    std::ifstream lecteur("/rawdata.txt");
-
-    //Instanciation du deque où seront stockées les objet Datapoint récoltés à partir du fichier rawdata.txt
-    // D'après le fichier d'aide à la prise de décision c'est la contenant le plus approprié // Il faudra en discuter !!
+int main(int argc, char **argv)
+{
     
-    std::deque<Datapoint> enregistrements_meteo;
-
-
-
-    // Parcours du fichier rawdata.txt afin de lire tout le texte
-    while(!lecteur.eof()){
+    //creation du set data
+    set<Datapoint> data;
+    
+    //cout << " Le size du containeur data (qui est un set>: " << data.size() << endl; // donne combien de datapoint se trouve dans le set
+    
+    string ligne;
+    
+    //Ouverture rawdata dans reader
+    ifstream reader("rawdata.txt");
+    
+    //Création des variables qui seront utilisés pour l'objet Datapoint
+    double lati;
+    double lon;
+    string notImp;
+    double tem;
+    string tstamp;
     
     
-    // Récupération d'une ligne que l'on place dans fichier_temp ouvert en écriture en mode TRUNC
-    std::string ligne_rawdata;
-    getline(lecteur, ligne_rawdata);
-    std::ofstream fichier_temp("temp.txt");
-    fichier_temp << ligne_rawdata;
-    fichier_temp.close();
-
-    // Ouverture en lecture de fichier_temp
-    std::ifstream lecteur_temp("temp.txt");
-
-
-    //Interprétation des chaines de caractères dans le format souhaité et remplissage des tableaux
-    
-    std::string latitude_temp;
-    lecteur_temp>> latitude_temp;
-    double latitude = std::stod(latitude_temp);
-
-    std::string longitude_temp;
-    lecteur_temp >> longitude_temp;
-    double longitude = std::stod(longitude_temp);
-
-    std::string station;
-    lecteur_temp >> station;
-
-    std::string temperature_temp;
-    lecteur_temp >> temperature_temp;
-    double temperature_f = std::stod(temperature_temp);
-    double temperature = temperature_f-32 *(5/9); // vrai formule à retrouver
-       
-
-    std::string dateHeure;
-    lecteur_temp >> dateHeure;
-
-
-    //Instanciation du premier objet de la classe Datapoint
-    Datapoint un_enregistrement(dateHeure, latitude, longitude, temperature);
-    enregistrements_meteo.push_back(un_enregistrement);
-
-
-    //fermeture de fichier_temp
-    fichier_temp.close();
-
-    //code afin que le prochain getline(lecteur, ligne_rawdata) puisse fonctionner.
-    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-
-
+    while (!reader.eof()){ // Tant quon arrive pas a la fin du fichier rawdata.txt boucle
+        
+        getline(reader, ligne); // get la premiere ligne de ce qui se trouve dans reader ( qui contient rawdata.txt ) puis le mettre dans le string ligne
+        stringstream iss(ligne); // stringstream va prendre la chaine de caractere jusqu'au premier espace blance
+        iss >> lati; // iss prendra la chaine de caractere 30.20, converti au type de "lati" soit double puis le met dans "lati"
+        iss >> lon;// ici -81.39 sera converti en double puis mis dans "lon"
+        iss >> notImp;// notImp pour not Important puisque cette variable ne sera pas mise dans le datapoint. Elle correspond au KHB39.
+        iss >> tem;
+        iss >> tstamp;
+        tem = (tem - 32) * 5/9;
+        
+        Datapoint datapointInput (tstamp, lati, lon, tem); // l'objet Datapoint est crée avec les données appropriées
+        data.insert(datapointInput); // Puis insérer dans le set appelé "data"
+        
+      //  cout << " Lat: " << lati << endl << " lon: " << lon << endl << " tem: " << tem << endl << " tstamp: " << tstamp << endl; // affiche pour tester le fonctionnement - peut être enlever ou mis en commentaires
+        
+        if (reader.eof())
+            cout << " End of line " << endl;
+        
     }
     
-    // Fermeture du fichier rawdata.txt
+    reader.close();
     
-    lecteur.close();
+    // Ecriture dans candata.txt
+    ofstream writer;
+    writer.open("candata.txt");
+    set<Datapoint>::iterator iterateur;
     
-    // Vérification que le deque mes_enregisterments est bien rempli
-    
-    for (int i = 0; i< enregistrements_meteo.size(); i++){
-        enregistrements_meteo[i].afficherEnregistrement() ;
+    //for loop pour peupler le fichier candata.txt. Affiche aussi toutes les valeurs dans le set data à des fins de test.
+    for (iterateur = data.begin(); iterateur!=data.end(); iterateur++){
+        
+       iterateur->afficherDataPoint();
+        writer << iterateur->getTimestamp() << " " << iterateur->getLatitude() << " "  << iterateur->getLongitude() << " " << iterateur ->getCelsius() << endl;
+        
     }
     
+    writer.close();
     
 }
 
 
 
 
-
-//
